@@ -1,0 +1,12 @@
+﻿services:
+  - type: web
+    name: todolist-blazor
+    env: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./TODOlist/Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: PORT
+        value: 8080

@@ -1,0 +1,29 @@
+﻿@page "/factorial"
+@rendermode InteractiveServer
+
+<h3>Factorial</h3>
+
+<input @bind="number" type="number" min="0" />
+<button @onclick="Calculate">Вычислить</button>
+
+@if (result.HasValue)
+{
+   <p>Факториал числа @number = @result</p>
+}
+
+@*@code {
+    private int number = 0;
+    private long? result;
+
+    private void Calculate()
+    {
+        if (number < 0) return;
+        result = ComputeFactorial(number);
+    }
+
+    private long ComputeFactorial(int n)
+    {
+        if (n <= 1) return 1;
+        return n * ComputeFactorial(n - 1);
+    }
+}*@

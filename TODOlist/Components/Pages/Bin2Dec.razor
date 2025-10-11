@@ -1,0 +1,43 @@
+﻿@page "/bin2dec"
+@rendermode InteractiveServer
+
+<h3>Bin2Dec</h3>
+
+<input @bind="inputBin" placeholder="Введите двоичное число (0 и 1)" />
+<button @onclick="Converted">Преобразовать</button>
+
+@if (!string.IsNullOrEmpty(result))
+{
+    <p>Результат: @result</p>
+}
+
+@code {
+    private string inputBin = "";
+    private string result = "";
+
+    private void Converted()
+    {
+        result = "";
+        if (IsValidBinary(inputBin))
+        {
+            try
+            {
+                long dec = Convert.ToInt64(inputBin, 2);
+                result = dec.ToString();
+            }
+            catch
+            {
+                result = "Слишком большое число";
+            }
+        }
+        else
+        {
+            result = "Некорректное двоичное число";
+        }
+    }
+
+    private bool IsValidBinary(string s)
+    {
+        return !string.IsNullOrEmpty(s) && s.All(c => c == '0' || c == '1');
+    }
+}

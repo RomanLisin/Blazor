@@ -1,0 +1,31 @@
+﻿@page "/dec2hex"
+@rendermode InteractiveServer
+
+<h3>Dec2Hex</h3>
+
+<input @bind="inputDec" placeholder="Введите десятичное число" />
+<button @onclick="Converted">Преобразовать</button>
+
+@if (!string.IsNullOrEmpty(result))
+{
+    <p>Результат: @result</p>
+}
+
+@code
+{
+    private string inputDec = "";
+    private string result = "";
+
+    private void Converted()
+    {
+        result = "";
+        if(int.TryParse(inputDec, out int dec) && dec >=0)
+        {
+            result = Convert.ToString(dec, 16).ToUpper();
+        }
+        else
+        {
+            result = "Некорректное число";
+        }
+    }
+}

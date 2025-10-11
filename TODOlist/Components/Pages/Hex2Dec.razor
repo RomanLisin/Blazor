@@ -1,0 +1,48 @@
+﻿@page "/hex2dec"
+@rendermode InteractiveServer
+
+<h3>Hex2Bin</h3>
+
+<input @bind="inputHex" placeholder="Введите шестнадцатеричное число" />
+<button @onclick="Converted">Преобразовать</button>
+
+@if (!string.IsNullOrEmpty(result))
+{
+    <p>Результат: @result</p>
+}
+
+@code {
+    private string inputHex = "";
+    private string result = "";
+
+    private void Converted()
+    {
+        result = "";
+        string cleanHex = inputHex.Trim();
+        if (string.IsNullOrEmpty(cleanHex))
+        {
+            result = "Пустой ввод";
+            return;
+        }
+        try
+        {
+            // убираем, если есть, префикс 0x
+            if (cleanHex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+                cleanHex = cleanHex[2..];
+
+            if (cleanHex.All(c => "0123456789ABCDEFabcdef".Contains(c)))
+            {
+                long dec = Convert.ToInt64(cleanHex, 16);
+                result = dec.ToString();
+            }
+            else
+            {
+                result = "Некорректное шестнадцатеричное число";
+            }
+        }
+        catch
+        {
+            result = "Слишком большое число или ошибка формата";
+        }
+    }
+}
