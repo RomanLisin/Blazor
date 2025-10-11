@@ -4,7 +4,7 @@
     env: docker
     plan: free
     branch: main
-    dockerfilePath: ./Blazor/TODOlist/Dockerfile
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
