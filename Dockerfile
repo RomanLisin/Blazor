@@ -3,18 +3,18 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # копируем только проект TODOlist
-COPY ./Blazor/TODOlist/TODOlist.csproj ./Blazor/TODOlist/
-RUN dotnet restore ./Blazor/TODOlist/TODOlist.csproj
+COPY ./TODOlist/TODOlist.csproj ./TODOlist/
+RUN dotnet restore ./TODOlist/TODOlist.csproj
 
 # копируем всё остальное решение
 COPY . .
 
 # публикуем только проект TODOlist
-RUN dotnet publish ./Blazor/TODOlist/TODOlist.csproj -c Release -o /app/publish
+RUN dotnet publish -c Release -o /app/publish
 
 # Runtime контейнер
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-WORKDIR /app
+WORKDIR /repos/TODOlist
 COPY --from=build /app/publish .
 
 # Render подставит $PORT автоматически
