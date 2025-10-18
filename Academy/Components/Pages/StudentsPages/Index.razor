@@ -6,24 +6,40 @@
 @implements IAsyncDisposable
 @inject IDbContextFactory<Academy.Data.AcademyContext> DbFactory
 
+@rendermode InteractiveServer
+
 <PageTitle>Index</PageTitle>
 
 <h1>Index</h1>
+<div>
+    <form action="/students" data-enhance data-permanent>
+           <input type="search" name="NameFilter"/>
+           <input type="submit" value="search"/>
+    </form>
+</div>
+<div>
+	<label for=’items-per-page”>Items per page</label>
+	<select name=”items-per-page @bind="pagination.ItemsPerPage">
+	<option>3</option>
+	<option>5</option>
+	<option>8</option>
+	</select>
+</div>
 
 <p>
     <a href="students/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Students">
-    <PropertyColumn Property="students => students.stud_id" />
-    <PropertyColumn Property="students => students.last_name" />
-    <PropertyColumn Property="students => students.first_name" />
-    <PropertyColumn Property="students => students.middle_name" />
-    <PropertyColumn Property="students => students.birth_date" />
-    <PropertyColumn Property="students => students.email" />
-    <PropertyColumn Property="students => students.phone" />
-    <PropertyColumn Property="students => students.photo" />
-    <PropertyColumn Property="students => students.group" />
+<QuickGrid Class="table" Items="FilteredStudents" Pagination="pagination">
+    <PropertyColumn Property="students => students.stud_id" Sortable="true" />
+    <PropertyColumn Property="students => students.last_name" Sortable="true" />
+    <PropertyColumn Property="students => students.first_name" Sortable="true" />
+    <PropertyColumn Property="students => students.middle_name" Sortable="true" />
+    <PropertyColumn Property="students => students.birth_date" Sortable="true" />
+    <PropertyColumn Property="students => students.email" Sortable="true" />
+    <PropertyColumn Property="students => students.phone" Sortable="true" />
+    <PropertyColumn Property="students => students.photo"/>
+    <PropertyColumn Property="students => students.group" Sortable="true" />
 
     <TemplateColumn Context="students">
         <a href="@($"students/edit?stud_id={students.stud_id}")">Edit</a> |
@@ -32,8 +48,17 @@
     </TemplateColumn>
 </QuickGrid>
 
+<Paginator State="pagination" />
+
 @code {
     private AcademyContext context = default!;
+    [SupplyParameterFromQuery]
+    string NameFilter { get; set; } = "";
+
+    IQueryable<Students> FilteredStudents =>
+        context.Students.Where(m => m.last_name.Contains(NameFilter ?? string.Empty));
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
 
     protected override void OnInitialized()
     {

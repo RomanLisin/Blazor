@@ -1,0 +1,72 @@
+﻿@page "/teachers"
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Academy.Models
+@using Academy.Data
+@implements IAsyncDisposable
+@inject IDbContextFactory<Academy.Data.AcademyContext> DbFactory
+
+@rendermode InteractiveServer
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<div>
+    <form action="/teachers" data-enhance data-permanent>
+        <input type="search" name="NameFilter" />
+        <input type="submit" value="search" />
+    </form>
+</div>
+<div>
+    <label for=’items-per-page”>Items per page</label>
+    <select name=”items-per-page @bind="pagination.ItemsPerPage">
+        <option>3</option>
+        <option>5</option>
+        <option>8</option>
+    </select>
+</div>
+
+<p>
+    <a href="teachers/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="FilteredTeachers" Pagination="pagination">
+    <PropertyColumn Property="teachers => teachers.teacher_id" Sortable="true" />
+    <PropertyColumn Property="teachers => teachers.last_name" Sortable="true"/>
+    <PropertyColumn Property="teachers => teachers.first_name" Sortable="true" />
+    <PropertyColumn Property="teachers => teachers.middle_name" Sortable="true"/>
+    <PropertyColumn Property="teachers => teachers.birth_date" Sortable="true"/>
+    <PropertyColumn Property="teachers => teachers.email" Sortable="true"/>
+    <PropertyColumn Property="teachers => teachers.phone" Sortable="true"/>
+    <PropertyColumn Property="teachers => teachers.photo" />
+    <PropertyColumn Property="teachers => teachers.work_since" Sortable="true"/>
+    <PropertyColumn Property="teachers => teachers.rate" Sortable="true"/>
+
+    <TemplateColumn Context="teachers">
+        <a href="@($"teachers/edit?stud_id={teachers.teacher_id}")">Edit</a> |
+        <a href="@($"teachers/details?stud_id={teachers.teacher_id}")">Details</a> |
+        <a href="@($"teachers/delete?stud_id={teachers.teacher_id}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+<Paginator State="pagination" />
+
+@code {
+    private AcademyContext context = default!;
+
+    [SupplyParameterFromQuery]
+    string NameFilter { get; set; } = "";
+
+    IQueryable<Teachers> FilteredTeachers =>
+        context.Teachers.Where(m => m.last_name.Contains(NameFilter ?? string.Empty));
+
+    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
