@@ -14,8 +14,8 @@
 
 <div>
     <form action="/groups" data-enhance data-permanent>
-        <input type="search" name="NameFilter" />
-        <input type="submit" value="search" />
+        <input type="search" name="GroupFilter" value="@GroupFilter"/>
+        <input type="submit" value="Search" />
     </form>
 </div>
 
@@ -50,7 +50,7 @@
     private AcademyContext context = default!;
 
     [SupplyParameterFromQuery]
-    string GroupFilter { get; set; } = "";
+    public string? GroupFilter { get; set; } = "";
 
     IQueryable<Groups> FilteredGroups =>
         context.Groups.Where(m => m.group_name.Contains(GroupFilter ?? string.Empty));

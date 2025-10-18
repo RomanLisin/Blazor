@@ -14,8 +14,8 @@
 
 <div>
     <form action="/directions" data-enhance data-permanent>
-        <input type="search" name="NameFilter" />
-        <input type="submit" value="search" />
+        <input type="search" name="DirectionFilter" value="@DirectionFilter" />
+        <input type="submit" value="Search" />
     </form>
 </div>
 
@@ -49,7 +49,7 @@
     private AcademyContext context = default!;
 
     [SupplyParameterFromQuery]
-    string DirectionFilter { get; set; } = "";
+    public string? DirectionFilter { get; set; } = "";
 
     IQueryable<Directions> FilteredDirections =>
        context.Directions.Where(m => m.direction_name.Contains(DirectionFilter ?? string.Empty));
